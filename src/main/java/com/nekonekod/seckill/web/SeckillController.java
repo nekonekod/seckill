@@ -19,7 +19,6 @@ import java.util.Date;
 import java.util.List;
 
 /**
- *
  * Created by Nekonekod on 2016/8/9.
  */
 @Controller
@@ -99,6 +98,7 @@ public class SeckillController {
     }
 
     @RequestMapping(value = "/time/now", method = RequestMethod.GET)
+    @ResponseBody
     public SeckillResult<Long> time() {
         Date now = new Date();
         return new SeckillResult<Long>(true, now.getTime());
