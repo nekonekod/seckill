@@ -2,6 +2,7 @@ package com.nekonekod.seckill.service.impl;
 
 import com.nekonekod.seckill.dao.SeckillDao;
 import com.nekonekod.seckill.dao.SuccessKillDao;
+import com.nekonekod.seckill.dao.cache.RedisDao;
 import com.nekonekod.seckill.dto.Exposer;
 import com.nekonekod.seckill.dto.SeckillExecution;
 import com.nekonekod.seckill.entity.Seckill;
@@ -33,6 +34,8 @@ public class SeckillServiceImpl implements SeckillService {
     private SeckillDao seckillDao;
     @Autowired
     private SuccessKillDao successKillDao;
+    @Autowired
+    private RedisDao redisDao;
 
     //md5盐值，用于混淆
     private final String salt = "asdf437ag1aksjg$&^%^*^AL753SBSAFbasdkgjl7aasg";
@@ -46,9 +49,18 @@ public class SeckillServiceImpl implements SeckillService {
     }
 
     public Exposer exportSeckillUrl(long seckillId) {
-        Seckill seckill = seckillDao.queryById(seckillId);
+        //优化点：缓存优化
+        //1:访问redis
+        Seckill seckill = redisDao.getSeckill(seckillId);
         if (seckill == null) {
-            return new Exposer(false, seckillId);
+            //2:访问数据库
+            seckill = seckillDao.queryById(seckillId);
+            if (seckill == null) {
+                return new Exposer(false, seckillId);
+            } else {
+                //3：放入redis
+                redisDao.putSeckill(seckill);
+            }
         }
         Date startTime = seckill.getStartTime();
         Date endTime = seckill.getEndTime();
@@ -93,7 +105,7 @@ public class SeckillServiceImpl implements SeckillService {
                     throw new RepeatKillException("seckill repeated");
                 } else {
                     //秒杀成功
-                    SuccessKilled successKilled = successKillDao.queryByIdWithSeckill(seckillId);
+                    SuccessKilled successKilled = successKillDao.queryByIdWithSeckill(seckillId,userPhone);
                     return new SeckillExecution(seckillId, SeckillStateEnum.SUCCESS, successKilled);
                 }
             }

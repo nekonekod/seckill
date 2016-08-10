@@ -21,8 +21,9 @@ public interface SuccessKillDao {
      * 根据id查询successKilled并携带秒杀商品对象
      *
      * @param seckillId
+     * @param userPhone
      * @return
      */
-    SuccessKilled queryByIdWithSeckill(@Param("seckillId") long seckillId);
+    SuccessKilled queryByIdWithSeckill(@Param("seckillId") long seckillId, @Param("userPhone") long userPhone);
 
 }

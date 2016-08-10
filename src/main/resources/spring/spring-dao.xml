@@ -6,15 +6,15 @@
     http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
     <!-- 配置整合Mibatis过程-->
     <!-- 1：配置数据库相关参数-->
-    <context:property-placeholder location="classpath:jdbc.properties"/>
+    <context:property-placeholder location="classpath:jdbc.properties,classpath:redis.properties"/>
 
     <!-- 2:配置连接池-->
     <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
         <!-- 配置连接池属性-->
-        <property name="driverClass" value="${driver}"/>
-        <property name="jdbcUrl" value="${url}"/>
-        <property name="user" value="${user}"/>
-        <property name="password" value="${password}"/>
+        <property name="driverClass" value="${jdbc.driver}"/>
+        <property name="jdbcUrl" value="${jdbc.url}"/>
+        <property name="user" value="${jdbc.user}"/>
+        <property name="password" value="${jdbc.password}"/>
 
         <!-- c3p0连接池的私有属性-->
         <property name="maxPoolSize" value="30"/>
@@ -45,6 +45,12 @@
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
         <!-- 给出扫描Dao接口包-->
         <property name="basePackage" value="com.nekonekod.seckill.dao"/>
+    </bean>
+
+    <!-- 注入RedisDao -->
+    <bean id="redisDao" class="com.nekonekod.seckill.dao.cache.RedisDao">
+        <constructor-arg index="0" value="${redis.ip}"/>
+        <constructor-arg index="1" value="${redis.port}"/>
     </bean>
 
 </beans>

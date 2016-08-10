@@ -20,7 +20,9 @@ public class SuccessKillDaoTest {
 
     @Test
     public void insertSuccessKilled() throws Exception {
-        SuccessKilled successKilled = successKillDao.queryByIdWithSeckill(1000);
+        long id = 1000 ;
+        long userPhone = 1245678901 ;
+        SuccessKilled successKilled = successKillDao.queryByIdWithSeckill(id, userPhone);
         System.out.println(successKilled);
         System.out.println(successKilled.getSeckill());
     }
