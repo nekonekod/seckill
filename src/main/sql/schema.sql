@@ -12,9 +12,9 @@ CREATE TABLE seckill (
   COMMENT '商品名称',
   number      INT          NOT NULL
   COMMENT '库存数量',
-  start_time  TIMESTAMP    NOT NULL
+  start_time  TIMESTAMP    NOT NULL  DEFAULT current_timestamp
   COMMENT '秒杀开始时间',
-  end_time    TIMESTAMP    NOT NULL
+  end_time    TIMESTAMP    NOT NULL  DEFAULT current_timestamp
   COMMENT '秒杀结束时间',
   create_time TIMESTAMP    NOT NULL  DEFAULT current_timestamp
   COMMENT '创建时间',
@@ -43,7 +43,7 @@ CREATE TABLE success_killed (
   COMMENT '用户手机号',
   state       TINYINT   NOT NULL  DEFAULT -1
   COMMENT '状态标识：-1无效，0成功，1已付款',
-  create_time TIMESTAMP NOT NULL
+  create_time TIMESTAMP NOT NULL  DEFAULT current_timestamp
   COMMENT '创建时间',
   PRIMARY KEY (seckill_id, user_phone), /*联合主键*/
   KEY idx_create_time(create_time)
